@@ -33,6 +33,13 @@ class Movie {
   double voteAverage;
   int voteCount;
 
+  get fullPosterPath {
+    return posterPath != null
+        // ignore: unnecessary_brace_in_string_interps
+        ? 'https://image.tmdb.org/t/p/w500${posterPath}'
+        : 'https://i.stack.imgur.com/GNhxO.png';
+  }
+
   factory Movie.fromJson(String str) => Movie.fromMap(json.decode(str));
 
   factory Movie.fromMap(Map<String, dynamic> json) => Movie(
