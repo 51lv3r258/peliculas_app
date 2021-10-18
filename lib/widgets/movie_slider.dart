@@ -35,9 +35,9 @@ class _MovieSliderState extends State<MovieSlider> {
 
   @override
   Widget build(BuildContext context) {
+    final textScaleFactor = MediaQuery.of(context).textScaleFactor;
     return SizedBox(
       width: double.infinity,
-      height: 270,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -50,15 +50,18 @@ class _MovieSliderState extends State<MovieSlider> {
                     const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
-          Expanded(
-            // * Usar todo el espacio disponible
-            child: ListView.builder(
-                controller: scrollCtrl,
-                scrollDirection: Axis.horizontal,
-                itemCount: widget.movies.length,
-                itemBuilder: (_, int index) {
-                  return _MoviePoster(widget.movies[index]); //* widget privado
-                }),
+          Center(
+            child: SizedBox(
+              height: 249 + (32 * (textScaleFactor - 1)),
+              child: ListView.builder(
+                  controller: scrollCtrl,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: widget.movies.length,
+                  itemBuilder: (_, int index) {
+                    return _MoviePoster(
+                        widget.movies[index]); //* widget privado
+                  }),
+            ),
           ),
         ],
       ),
@@ -73,10 +76,8 @@ class _MoviePoster extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 130,
-      height: 190,
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Column(
         children: <Widget>[
           GestureDetector(
@@ -94,11 +95,14 @@ class _MoviePoster extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 5.0),
-          Text(
-            movie.title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
+          SizedBox(
+            width: 130,
+            child: Text(
+              movie.title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
           )
         ],
       ),
