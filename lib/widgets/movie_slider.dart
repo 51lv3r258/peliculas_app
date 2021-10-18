@@ -1,12 +1,37 @@
 import 'package:flutter/material.dart';
 import '../models/models.dart';
 
-class MovieSlider extends StatelessWidget {
+class MovieSlider extends StatefulWidget {
   final List<Movie> movies;
   final String? title;
+  final Function onNextPage;
 
-  const MovieSlider({Key? key, required this.movies, this.title})
+  const MovieSlider(
+      {Key? key, required this.movies, this.title, required this.onNextPage})
       : super(key: key);
+
+  @override
+  State<MovieSlider> createState() => _MovieSliderState();
+}
+
+class _MovieSliderState extends State<MovieSlider> {
+  final ScrollController scrollCtrl = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    scrollCtrl.addListener(() {
+      if (scrollCtrl.position.pixels >=
+          scrollCtrl.position.maxScrollExtent - 500) {
+        widget.onNextPage();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,11 +41,11 @@ class MovieSlider extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          if (title != null)
+          if (widget.title != null)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                title!,
+                widget.title!,
                 style:
                     const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
@@ -28,10 +53,11 @@ class MovieSlider extends StatelessWidget {
           Expanded(
             // * Usar todo el espacio disponible
             child: ListView.builder(
+                controller: scrollCtrl,
                 scrollDirection: Axis.horizontal,
-                itemCount: movies.length,
+                itemCount: widget.movies.length,
                 itemBuilder: (_, int index) {
-                  return _MoviePoster(movies[index]); //* widget privado
+                  return _MoviePoster(widget.movies[index]); //* widget privado
                 }),
           ),
         ],
