@@ -39,6 +39,12 @@ class Movie {
         ? 'https://image.tmdb.org/t/p/w500${posterPath}'
         : 'https://i.stack.imgur.com/GNhxO.png';
   }
+  get fullBackdropPath {
+    return backdropPath != null
+        // ignore: unnecessary_brace_in_string_interps
+        ? 'https://image.tmdb.org/t/p/w500${backdropPath}'
+        : 'https://i.stack.imgur.com/GNhxO.png';
+  }
 
   factory Movie.fromJson(String str) => Movie.fromMap(json.decode(str));
 

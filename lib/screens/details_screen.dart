@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../models/models.dart';
 import '../widgets/widgets.dart';
 
 class DetailsScreen extends StatelessWidget {
@@ -7,19 +8,16 @@ class DetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String movie =
-        ModalRoute.of(context)?.settings.arguments.toString() ?? 'no-movie';
+    final Movie movie = ModalRoute.of(context)!.settings.arguments as Movie;
 
     return Scaffold(
       body: CustomScrollView(
         slivers: <Widget>[
-          _CustomAppBar(),
+          _CustomAppBar(movie),
           SliverList(
               delegate: SliverChildListDelegate([
-            _PosterAndTitle(),
-            _Overview(),
-            _Overview(),
-            _Overview(),
+            _PosterAndTitle(movie),
+            _Overview(movie.overview),
             CastingCards(),
           ]))
         ],
@@ -29,7 +27,9 @@ class DetailsScreen extends StatelessWidget {
 }
 
 class _CustomAppBar extends StatelessWidget {
-  const _CustomAppBar({Key? key}) : super(key: key);
+  final Movie movie;
+
+  const _CustomAppBar(this.movie, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,11 +41,12 @@ class _CustomAppBar extends StatelessWidget {
       flexibleSpace: FlexibleSpaceBar(
         centerTitle: true,
         titlePadding: const EdgeInsets.all(0),
-        title: const Padding(
-          padding: EdgeInsets.only(bottom: 10),
-          child:  Text(
-            'movie.title',
-            style: TextStyle(fontSize: 16),
+        title: Padding(
+          padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
+          child: Text(
+            movie.title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 16),
           ),
         ),
         background: Container(
@@ -54,7 +55,7 @@ class _CustomAppBar extends StatelessWidget {
             opacity: 0.8,
             child: FadeInImage.assetNetwork(
               placeholder: 'assets/loading.gif',
-              image: 'https://via.placeholder.com/500x300',
+              image: movie.fullBackdropPath,
               fit: BoxFit.cover,
             ),
           ),
@@ -65,51 +66,58 @@ class _CustomAppBar extends StatelessWidget {
 }
 
 class _PosterAndTitle extends StatelessWidget {
-  const _PosterAndTitle({Key? key}) : super(key: key);
+  final Movie movie;
+
+  const _PosterAndTitle(this.movie, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
 
     return Container(
+      width: double.infinity,
       margin: const EdgeInsets.only(top: 20),
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: <Widget>[
           ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            child: const FadeInImage(
-              placeholder: AssetImage('assets/no-image.jpg'),
-              image: NetworkImage('https://via.placeholder.com/200x300'),
+            child: FadeInImage(
+              placeholder: const AssetImage('assets/no-image.jpg'),
+              image: NetworkImage(movie.fullPosterPath),
               height: 150,
             ),
           ),
           const SizedBox(width: 20),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                'movie.title',
-                style: textTheme.headline5,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-              ),
-              Text(
-                'movie.originaTitle ',
-                style: textTheme.subtitle1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              Row(
-                children: <Widget>[
-                  const Icon(Icons.star_outline, size: 15, color: Colors.grey),
-                  const SizedBox(width: 5),
-                  Text(
-                    'movie.voteAvg',
-                    style: textTheme.caption,
-                  )
-                ],
-              )
-            ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  movie.title,
+                  style: textTheme.headline5,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                ),
+                Text(
+                  movie.originalTitle,
+                  style: textTheme.subtitle1,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                ),
+                Row(
+                  children: <Widget>[
+                    const Icon(Icons.star_outline,
+                        size: 15, color: Colors.grey),
+                    const SizedBox(width: 5),
+                    Text(
+                      '${movie.voteAverage}',
+                      style: textTheme.caption,
+                    )
+                  ],
+                )
+              ],
+            ),
           )
         ],
       ),
@@ -118,16 +126,18 @@ class _PosterAndTitle extends StatelessWidget {
 }
 
 class _Overview extends StatelessWidget {
-  const _Overview({Key? key}) : super(key: key);
+  final String overview;
+
+  const _Overview(this.overview, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
       child: Text(
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus molestie massa at justo semper, id dictum dui varius. Nunc metus lectus, vehicula vel ornare sit amet, molestie ut diam. Suspendisse eu viverra tortor. Suspendisse potenti. Etiam et nulla odio. Sed sit amet enim ipsum. Integer et bibendum velit, ac mollis neque. Phasellus quis dolor tortor. Etiam ut tempor dolor, et iaculis eros. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean lobortis pulvinar tincidunt.',
+        overview,
         textAlign: TextAlign.justify,
-        style: Theme.of(context).textTheme.subtitle1,
+        style: Theme.of(context).textTheme.subtitle1!.copyWith(height: 1.25),
       ),
     );
   }
