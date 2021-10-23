@@ -46,7 +46,11 @@ class MovieSearchDelegate extends SearchDelegate {
 
           return ListView.builder(
             itemCount: movies.length,
-            itemBuilder: (_, int index) => _MovieItem(movies[index]),
+            itemBuilder: (_, int index) {
+              final Movie movie = movies[index];
+              movie.heroId = 'search-$index';
+              return _MovieItem(movie);
+            },
           );
         });
   }
@@ -60,11 +64,14 @@ class _MovieItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: FadeInImage.assetNetwork(
-        placeholder: 'assets/no-image.jpg',
-        image: movie.fullPosterPath,
-        width: 50,
-        fit: BoxFit.contain,
+      leading: Hero(
+        tag: movie.heroId!,
+        child: FadeInImage.assetNetwork(
+          placeholder: 'assets/no-image.jpg',
+          image: movie.fullPosterPath,
+          width: 50,
+          fit: BoxFit.contain,
+        ),
       ),
       title: Text(movie.title),
       subtitle: Text(movie.originalTitle),

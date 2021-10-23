@@ -58,8 +58,11 @@ class _MovieSliderState extends State<MovieSlider> {
                   scrollDirection: Axis.horizontal,
                   itemCount: widget.movies.length,
                   itemBuilder: (_, int index) {
-                    return _MoviePoster(
-                        widget.movies[index]); //* widget privado
+                    Movie movie = widget.movies[index];
+                    movie.heroId =
+                        '${widget.title}-$index-${widget.movies[index]}';
+
+                    return _MoviePoster(movie); //* widget privado
                   }),
             ),
           ),
@@ -83,14 +86,17 @@ class _MoviePoster extends StatelessWidget {
           GestureDetector(
             onTap: () =>
                 Navigator.pushNamed(context, 'details', arguments: movie),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: FadeInImage(
-                placeholder: const AssetImage('assets/no-image.jpg'),
-                image: NetworkImage(movie.fullPosterPath),
-                width: 130,
-                height: 190,
-                fit: BoxFit.cover,
+            child: Hero(
+              tag: movie.heroId!,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: FadeInImage(
+                  placeholder: const AssetImage('assets/no-image.jpg'),
+                  image: NetworkImage(movie.fullPosterPath),
+                  width: 130,
+                  height: 190,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),

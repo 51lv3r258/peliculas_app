@@ -33,12 +33,15 @@ class Movie {
   double voteAverage;
   int voteCount;
 
+  String? heroId;
+
   get fullPosterPath {
     return posterPath != null
         // ignore: unnecessary_brace_in_string_interps
         ? 'https://image.tmdb.org/t/p/w500${posterPath}'
         : 'https://i.stack.imgur.com/GNhxO.png';
   }
+
   get fullBackdropPath {
     return backdropPath != null
         // ignore: unnecessary_brace_in_string_interps
