@@ -88,6 +88,8 @@ class _PosterAndTitle extends StatelessWidget {
                 placeholder: const AssetImage('assets/no-image.jpg'),
                 image: NetworkImage(movie.fullPosterPath),
                 height: 150,
+                width: 105,
+                fit: BoxFit.fitHeight,
               ),
             ),
           ),

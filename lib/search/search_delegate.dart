@@ -36,8 +36,10 @@ class MovieSearchDelegate extends SearchDelegate {
     final MoviesProvider moviesProvider =
         Provider.of<MoviesProvider>(context, listen: false);
 
-    return FutureBuilder(
-        future: moviesProvider.searchMovies(query),
+    moviesProvider.getSuggestionsByQuery(query);
+
+    return StreamBuilder(
+        stream: moviesProvider.suggestionStream,
         initialData: null,
         builder: (_, AsyncSnapshot<List<Movie>?> snapshot) {
           if (!snapshot.hasData) return const _EmptyWidget();
@@ -69,8 +71,9 @@ class _MovieItem extends StatelessWidget {
         child: FadeInImage.assetNetwork(
           placeholder: 'assets/no-image.jpg',
           image: movie.fullPosterPath,
-          width: 50,
-          fit: BoxFit.contain,
+          width: 35,
+          height: 60,
+          fit: BoxFit.cover,
         ),
       ),
       title: Text(movie.title),
